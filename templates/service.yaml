@@ -1,0 +1,17 @@
+{{- range $serviceName, $serviceConfig := .Values.microservices }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}-svc
+  labels:
+    app: {{ $serviceName }}
+spec:
+  selector:
+    app: {{ $serviceName }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: {{ $serviceConfig.port }}
+  type: {{ $serviceConfig.serviceType | default "ClusterIP" }}
+---
+{{- end }}

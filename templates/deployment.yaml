@@ -1,0 +1,55 @@
+{{- range $serviceName, $serviceConfig := .Values.microservices }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}
+  labels:
+    app: {{ $serviceName }}
+spec:
+  replicas: {{ $.Values.global.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $serviceName }}
+  template:
+    metadata:
+      labels:
+        app: {{ $serviceName }}
+    spec:
+      containers:
+        - name: {{ $serviceName }}-container
+          image: "{{ $serviceConfig.image }}:{{ $serviceConfig.tag }}"
+          ports:
+            - containerPort: {{ $serviceConfig.port }}
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          
+          # # Dynamic Liveness Probe based on microservice type
+          # livenessProbe:
+          #   httpGet:
+          #     {{- if eq $serviceConfig.type "springboot" }}
+          #     path: /actuator/health
+          #     {{- else if eq $serviceConfig.type "python" }}
+          #     path: /health
+          #     {{- end }}
+          #     port: {{ $serviceConfig.port }}
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+            
+          # # Dynamic Readiness Probe based on microservice type
+          # readinessProbe:
+          #   httpGet:
+          #     {{- if eq $serviceConfig.type "springboot" }}
+          #     path: /actuator/health
+          #     {{- else if eq $serviceConfig.type "python" }}
+          #     path: /health
+          #     {{- end }}
+          #     port: {{ $serviceConfig.port }}
+          #   initialDelaySeconds: 15
+          #   periodSeconds: 10
+---
+{{- end }}
