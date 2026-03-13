@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: property-db
+  labels:
+    app: property-db
+spec:
+  serviceName: "property-db-svc"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: property-db
+  template:
+    metadata:
+      labels:
+        app: property-db
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_DATABASE
+              value: propertydb
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: property-db-data
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: property-db-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 500Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: property-db-svc
+  labels:
+    app: property-db
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: property-db
+  clusterIP: None

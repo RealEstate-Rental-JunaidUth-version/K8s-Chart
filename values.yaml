@@ -1,33 +1,38 @@
 # Global settings for all pods
 global:
   replicaCount: 1
+  configServerUrl: "http://config-service-svc:80"
 
 # List every microservice here. The template will loop through this list.
 microservices:
   gateway-service:
     image: junaiduthman/gateway-service
-    tag: 6-51c1716
+    tag: 7-48cd426
     port: 8080
     type: springboot
     serviceType: LoadBalancer
+    needsConfigServer: true
 
   property-microservice:
     image: junaiduthman/property-management-service
     tag: 4-96ad5ab
     port: 8080
     type: springboot
+    needsConfigServer: true
 
   user-management-service:
     image: junaiduthman/user-management-service
     tag: 8-ff469eb
     port: 8080
     type: springboot
+    needsConfigServer: true
 
-  RentalAgreement-microservice:
+  rental-agreement-microservice:
     image: junaiduthman/rental-agreement-v2
     tag: 4-6892e92
     port: 8080
     type: springboot
+    needsConfigServer: true
 
   ml-pricesuggestionmodel:
     image: junaiduthman/ml-pricesuggestionmodel
@@ -37,7 +42,7 @@ microservices:
 
   property-recommendation-engine:
     image: junaiduthman/property-recommendation-engine
-    tag: latest
+    tag: 4-b3ecdaf
     port: 5000
     type: python
 
@@ -58,23 +63,25 @@ microservices:
     tag: 4-7316ef3
     port: 8080
     type: springboot
+    needsConfigServer: true
 
   config-service:
     image: junaiduthman/config-service
-    tag: 6-f11b440
-    port: 8080
+    tag: 7-bf1763b
+    port: 8888
     type: springboot
 
   auth-server:
     image: junaiduthman/authorization-service
-    tag: 4-e35a0a3
+    tag: 5-01e5959
     port: 8080
     type: springboot
+    needsConfigServer: true
 
   public-app:
     image: junaiduthman/public-app
     tag: 7-610f941
-    port: 6000
+    port: 80
     type: angular
     serviceType: LoadBalancer
 

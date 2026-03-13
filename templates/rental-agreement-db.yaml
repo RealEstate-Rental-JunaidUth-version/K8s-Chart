@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rental-agreement-db
+  labels:
+    app: rental-agreement-db
+spec:
+  serviceName: "rental-agreement-db-svc"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rental-agreement-db
+  template:
+    metadata:
+      labels:
+        app: rental-agreement-db
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_DATABASE
+              value: rental_agreement_db
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: rental-agreement-db-data
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: rental-agreement-db-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 500Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rental-agreement-db-svc
+  labels:
+    app: rental-agreement-db
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: rental-agreement-db
+  clusterIP: None

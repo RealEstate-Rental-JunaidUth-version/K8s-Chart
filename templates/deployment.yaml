@@ -27,7 +27,12 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
-          
+          {{- if $serviceConfig.needsConfigServer }}
+          env:
+            - name: CONFIG_SERVER_URL
+              value: "{{ $.Values.global.configServerUrl }}"
+          {{- end }}
+
           # # Dynamic Liveness Probe based on microservice type
           # livenessProbe:
           #   httpGet:
