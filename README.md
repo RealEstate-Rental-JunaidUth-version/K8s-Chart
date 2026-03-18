@@ -2,6 +2,7 @@
 
 
 ## Phase 1: Configuration Resolution (The "Startup")
+
 Kubernetes Deployment: When you deploy your Helm chart, your RentalAgreement Pod starts with the environment variable SPRING_PROFILES_ACTIVE=prod.
 Config Server Request: Upon startup, the RentalAgreement app asks the Config Server: "I am the RentalAgreement service, and I am in the prod profile. Give me my config."
 The Overwrite: The Config Server goes to your config-repo-estate-rental and reads two files:
@@ -41,7 +42,7 @@ Application Delivery: The PropertyManagement microservice (which is listening on
 
 application-prod.yml
  standardized port) receives the HTTP request and processes it. 
- 
+
 ## Summary of the "Magic"
 The Code doesn't care about IPs; it just uses a Variable.
 The Config Repo provides the Service Name for that variable in Production.

@@ -10,7 +10,7 @@ microservices:
     tag: 7-48cd426
     port: 8080
     type: springboot
-    serviceType: LoadBalancer
+    serviceType: ClusterIP   # Ingress is now the entry point — no need for LoadBalancer
     needsConfigServer: true
 
   property-microservice:
@@ -83,7 +83,7 @@ microservices:
     tag: 7-610f941
     port: 80
     type: angular
-    serviceType: LoadBalancer
+    serviceType: ClusterIP   # Ingress is now the entry point — no need for LoadBalancer
 
   
 
