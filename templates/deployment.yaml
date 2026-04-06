@@ -15,9 +15,16 @@ spec:
       labels:
         app: {{ $serviceName }}
     spec:
+      {{- if $serviceConfig.needsConfigServer }}
+      initContainers:
+        - name: wait-for-config-server
+          image: busybox:1.28
+          command: ['sh', '-c', "until nslookup config-service-svc; do echo waiting for config-server; sleep 2; done"]
+      {{- end }}
       containers:
         - name: {{ $serviceName }}-container
           image: "{{ $serviceConfig.image }}:{{ $serviceConfig.tag }}"
+          imagePullPolicy: Always
           ports:
             - containerPort: {{ $serviceConfig.port }}
           resources:
@@ -27,8 +34,10 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "1000m"
-          {{- if $serviceConfig.needsConfigServer }}
           env:
+            - name: PORT
+              value: "{{ $serviceConfig.port }}"
+          {{- if $serviceConfig.needsConfigServer }}
             - name: CONFIG_SERVER_URL
               value: "{{ $.Values.global.configServerUrl }}"
           {{- end }}

@@ -7,7 +7,7 @@ global:
 microservices:
   gateway-service:
     image: junaiduthman/gateway-service
-    tag: 7-48cd426
+    tag: latest
     port: 8080
     type: springboot
     serviceType: ClusterIP   # Ingress is now the entry point — no need for LoadBalancer
@@ -15,72 +15,72 @@ microservices:
 
   property-microservice:
     image: junaiduthman/property-management-service
-    tag: 4-96ad5ab
+    tag: latest
     port: 8080
     type: springboot
     needsConfigServer: true
 
   user-management-service:
     image: junaiduthman/user-management-service
-    tag: 8-ff469eb
+    tag: latest
     port: 8080
     type: springboot
     needsConfigServer: true
 
   rental-agreement-microservice:
     image: junaiduthman/rental-agreement-v2
-    tag: 4-6892e92
+    tag: latest
     port: 8080
     type: springboot
     needsConfigServer: true
 
   ml-pricesuggestionmodel:
     image: junaiduthman/ml-pricesuggestionmodel
-    tag: 5-7e4c672
+    tag: latest
     port: 5000
     type: python
 
   property-recommendation-engine:
     image: junaiduthman/property-recommendation-engine
-    tag: 4-b3ecdaf
+    tag: latest
     port: 5000
     type: python
 
   tenant-risk-scoring:
     image: junaiduthman/tenant-risk-scoring
-    tag: 4-0725daf
+    tag: latest
     port: 5000
     type: python
 
   predictive-heatmaps-of-neighborhood-price-evolution:
     image: junaiduthman/predictive-heatmaps-of-neighborhood-price-evolution
-    tag: 19-cb1f258
+    tag: latest
     port: 5000
     type: python
 
   notification-service:
     image: junaiduthman/notification-service
-    tag: 4-7316ef3
+    tag: latest
     port: 8080
     type: springboot
     needsConfigServer: true
 
   config-service:
     image: junaiduthman/config-service
-    tag: 7-bf1763b
+    tag: latest
     port: 8888
     type: springboot
 
   auth-server:
     image: junaiduthman/authorization-service
-    tag: 5-01e5959
+    tag: latest
     port: 8080
     type: springboot
     needsConfigServer: true
 
   public-app:
     image: junaiduthman/public-app
-    tag: 7-610f941
+    tag: latest
     port: 80
     type: angular
     serviceType: ClusterIP   # Ingress is now the entry point — no need for LoadBalancer
