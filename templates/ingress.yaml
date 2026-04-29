@@ -6,20 +6,12 @@ metadata:
     # Tell Kubernetes to use the Nginx Ingress Controller
     kubernetes.io/ingress.class: "nginx"
 
-    # WebSocket support for /ws-notifications/
+    # WebSocket support via native timeouts
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/server-snippets: |
-      location /ws-notifications/ {
-        proxy_pass http://gateway-service-svc;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "Upgrade";
-        proxy_set_header Host $host;
-      }
 
-    # CORS headers if needed
-    nginx.ingress.kubernetes.io/enable-cors: "true"
+    # CORS handled by Gateway service
+    nginx.ingress.kubernetes.io/enable-cors: "false"
 
     # Rewrite is NOT used here — we keep the /api/ prefix
     # because the gateway expects it
@@ -37,7 +29,16 @@ spec:
                 port:
                   number: 80
 
-          # ── 2. OAuth2 routes → Gateway ───────────────────────────
+          # ── 2. WebSocket routes → Gateway ────────────────────────
+          - path: /ws-notifications/
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway-service-svc
+                port:
+                  number: 80
+
+          # ── 3. OAuth2 routes → Gateway ───────────────────────────
           - path: /oauth2/
             pathType: Prefix
             backend:
@@ -46,7 +47,7 @@ spec:
                 port:
                   number: 80
 
-          # ── 3. OIDC Discovery routes → Gateway ───────────────────
+          # ── 4. OIDC Discovery routes → Gateway ───────────────────
           - path: /.well-known/
             pathType: Prefix
             backend:
@@ -55,7 +56,7 @@ spec:
                 port:
                   number: 80
 
-          # ── 4. Everything else → Angular public-app ──────────────
+          # ── 5. Everything else → Angular public-app ──────────────
           - path: /
             pathType: Prefix
             backend:
