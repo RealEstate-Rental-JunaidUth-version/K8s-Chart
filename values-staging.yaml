@@ -82,7 +82,7 @@ microservices:
 
   public-app:
     image: junaiduthman/public-app
-    tag: latest
+    tag: 21-76d4f5f
     port: 80
     type: angular
     serviceType: ClusterIP   # Ingress is now the entry point — no need for LoadBalancer
