@@ -87,6 +87,16 @@ microservices:
     type: angular
     serviceType: ClusterIP   # Ingress is now the entry point — no need for LoadBalancer
 
-  
-
-
+databases:
+  user-db:
+    databaseName: userdb
+    storage: 500Mi
+  property-db:
+    databaseName: propertydb
+    storage: 500Mi
+  rental-agreement-db:
+    databaseName: rental_agreement_db
+    storage: 500Mi
+  notification-db:
+    databaseName: notifications
+    storage: 500Mi

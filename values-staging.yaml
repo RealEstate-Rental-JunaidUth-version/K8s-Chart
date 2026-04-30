@@ -1,0 +1,102 @@
+# Global settings for all pods
+global:
+  replicaCount: 1
+  configServerUrl: "http://config-service-svc:80"
+  profile: prod
+  databasePassword: "root" # default password for databse test-release
+
+# List every microservice here. The template will loop through this list.
+microservices:
+  gateway-service:
+    image: junaiduthman/gateway-service
+    tag: latest
+    port: 8080
+    type: springboot
+    serviceType: ClusterIP   # Ingress is now the entry point — no need for LoadBalancer
+    needsConfigServer: true
+
+  property-microservice:
+    image: junaiduthman/property-management-service
+    tag: latest
+    port: 8080
+    type: springboot
+    needsConfigServer: true
+
+  user-management-service:
+    image: junaiduthman/user-management-service
+    tag: latest
+    port: 8080
+    type: springboot
+    needsConfigServer: true
+
+  rental-agreement-microservice:
+    image: junaiduthman/rental-agreement-v2
+    tag: latest
+    port: 8080
+    type: springboot
+    needsConfigServer: true
+
+  ml-pricesuggestionmodel:
+    image: junaiduthman/ml-pricesuggestionmodel
+    tag: latest
+    port: 5000
+    type: python
+
+  property-recommendation-engine:
+    image: junaiduthman/property-recommendation-engine
+    tag: latest
+    port: 5000
+    type: python
+
+  tenant-risk-scoring:
+    image: junaiduthman/tenant-risk-scoring
+    tag: latest
+    port: 5000
+    type: python
+
+  predictive-heatmaps-of-neighborhood-price-evolution:
+    image: junaiduthman/predictive-heatmaps-of-neighborhood-price-evolution
+    tag: latest
+    port: 5000
+    type: python
+
+  notification-service:
+    image: junaiduthman/notification-service
+    tag: latest
+    port: 8080
+    type: springboot
+    needsConfigServer: true
+
+  config-service:
+    image: junaiduthman/config-service
+    tag: latest
+    port: 8888
+    type: springboot
+
+  auth-server:
+    image: junaiduthman/authorization-service
+    tag: latest
+    port: 8080
+    type: springboot
+    needsConfigServer: true
+
+  public-app:
+    image: junaiduthman/public-app
+    tag: latest
+    port: 80
+    type: angular
+    serviceType: ClusterIP   # Ingress is now the entry point — no need for LoadBalancer
+
+databases:
+  user-db:
+    databaseName: userdb
+    storage: 500Mi
+  property-db:
+    databaseName: propertydb
+    storage: 500Mi
+  rental-agreement-db:
+    databaseName: rental_agreement_db
+    storage: 500Mi
+  notification-db:
+    databaseName: notifications
+    storage: 500Mi

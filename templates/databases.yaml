@@ -1,19 +1,20 @@
+{{- range $name, $config := .Values.databases }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: property-db
+  name: {{ $name }}
   labels:
-    app: property-db
+    app: {{ $name }}
 spec:
-  serviceName: "property-db-svc"
+  serviceName: "{{ $name }}-svc"
   replicas: 1
   selector:
     matchLabels:
-      app: property-db
+      app: {{ $name }}
   template:
     metadata:
       labels:
-        app: property-db
+        app: {{ $name }}
     spec:
       containers:
         - name: mysql
@@ -25,32 +26,34 @@ spec:
                   name: mysql-passwords
                   key: mysql-root-password
             - name: MYSQL_DATABASE
-              value: propertydb
+              value: {{ $config.databaseName }}
           ports:
             - containerPort: 3306
               name: mysql
           volumeMounts:
-            - name: property-db-data
+            - name: {{ $name }}-data
               mountPath: /var/lib/mysql
   volumeClaimTemplates:
     - metadata:
-        name: property-db-data
+        name: {{ $name }}-data
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 500Mi
+            storage: {{ $config.storage | default "500Mi" }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: property-db-svc
+  name: {{ $name }}-svc
   labels:
-    app: property-db
+    app: {{ $name }}
 spec:
   ports:
     - port: 3306
       targetPort: 3306
   selector:
-    app: property-db
+    app: {{ $name }}
   clusterIP: None
+---
+{{- end }}
