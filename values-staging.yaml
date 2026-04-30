@@ -1,6 +1,6 @@
 # Global settings for all pods
 global:
-  replicaCount: 1
+  replicaCount: 0
   configServerUrl: "http://config-service-svc:80"
   profile: prod
   databasePassword: "root" # default password for databse test-release
