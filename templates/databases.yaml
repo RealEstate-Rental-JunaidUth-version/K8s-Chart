@@ -27,6 +27,8 @@ spec:
                   key: mysql-root-password
             - name: MYSQL_DATABASE
               value: {{ $config.databaseName }}
+            - name: MYSQL_ROOT_HOST
+              value: "%"
           ports:
             - containerPort: 3306
               name: mysql
