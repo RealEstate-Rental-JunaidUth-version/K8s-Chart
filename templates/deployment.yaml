@@ -51,6 +51,11 @@ spec:
               value: "{{ $value }}"
           {{- end }}
           {{- end }}
+          {{- if $serviceConfig.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ $serviceConfig.envFromSecret }}
+          {{- end }}
 
           # # Dynamic Liveness Probe based on microservice type
           # livenessProbe:

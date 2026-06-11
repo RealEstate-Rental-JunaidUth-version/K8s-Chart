@@ -3,7 +3,6 @@ global:
   replicaCount: 1
   configServerUrl: "http://config-service-svc:80"
   profile: prod
-  databasePassword: "root" # default password for databse test-release
 # List every microservice here. The template will loop through this list.
 microservices:
   gateway-service:
@@ -13,24 +12,28 @@ microservices:
     type: springboot
     serviceType: ClusterIP # Ingress is now the entry point — no need for LoadBalancer
     needsConfigServer: true
+    envFromSecret: "app-secrets"
   property-microservice:
     image: junaiduthman/property-management-service
     tag: latest
     port: 8080
     type: springboot
     needsConfigServer: true
+    envFromSecret: "app-secrets"
   user-management-service:
     image: junaiduthman/user-management-service
     tag: latest
     port: 8080
     type: springboot
     needsConfigServer: true
+    envFromSecret: "app-secrets"
   rental-agreement-microservice:
     image: junaiduthman/rental-agreement-v2
     tag: latest
     port: 8080
     type: springboot
     needsConfigServer: true
+    envFromSecret: "app-secrets"
   ml-pricesuggestionmodel:
     image: junaiduthman/ml-pricesuggestionmodel
     tag: latest
@@ -57,6 +60,7 @@ microservices:
     port: 8080
     type: springboot
     needsConfigServer: true
+    envFromSecret: "app-secrets"
     env:
       KAFKA_BOOTSTRAP_SERVERS: "kafka.prod.svc.cluster.local:9092"
   config-service:
@@ -70,6 +74,7 @@ microservices:
     port: 8080
     type: springboot
     needsConfigServer: true
+    envFromSecret: "app-secrets"
   public-app:
     image: junaiduthman/public-app
     tag: 21-76d4f5f
