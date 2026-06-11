@@ -3,9 +3,7 @@ pipeline {
     
     parameters {
         choice(name: 'APP_NAME', 
-               choices: ['gateway-service', 'property-microservice', 'user-management-service', 
-                         'rental-agreement-microservice', 'ml-pricesuggestionmodel', 
-                         'public-app', 'admin-app'], 
+               choices: ['gateway-service', 'property-microservice', 'user-management-service','property-recommendation-engine', 'tenant-risk-scoring', 'rental-agreement-microservice', 'ml-pricesuggestionmodel', 'predictive-heatmaps-of-neighborhood-price-evolution','public-app','notification-service', 'config-service', 'auth-server'], 
                description: 'Select the microservice to promote to Production')
     }
 
