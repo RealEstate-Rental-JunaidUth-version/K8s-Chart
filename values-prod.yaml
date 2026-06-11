@@ -59,6 +59,8 @@ microservices:
     port: 8080
     type: springboot
     needsConfigServer: true
+    env:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.prod.svc.cluster.local:9092"
   config-service:
     image: junaiduthman/config-service
     tag: latest

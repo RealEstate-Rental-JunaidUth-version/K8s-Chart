@@ -45,6 +45,12 @@ spec:
             - name: CONFIG_SERVER_URL
               value: "{{ $.Values.global.configServerUrl }}"
           {{- end }}
+          {{- if $serviceConfig.env }}
+          {{- range $key, $value := $serviceConfig.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+          {{- end }}
+          {{- end }}
 
           # # Dynamic Liveness Probe based on microservice type
           # livenessProbe:
