@@ -1,3 +1,19 @@
+# Subchart Configurations
+kafka:
+  listeners:
+    client:
+      protocol: PLAINTEXT
+
+vault:
+  server:
+    dev:
+      enabled: true
+  injector:
+    enabled: false
+
+external-secrets:
+  installCRDs: true
+
 # Global settings for all pods
 global:
   replicaCount: 1

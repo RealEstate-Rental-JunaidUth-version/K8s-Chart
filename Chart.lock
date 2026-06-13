@@ -1,0 +1,12 @@
+dependencies:
+- name: kafka
+  repository: https://charts.bitnami.com/bitnami
+  version: 31.5.0
+- name: vault
+  repository: https://helm.releases.hashicorp.com
+  version: 0.33.0
+- name: external-secrets
+  repository: https://charts.external-secrets.io
+  version: 2.6.0
+digest: sha256:e3717164ddd9a9753ef5616b7bf5bc2f45158a2a861b733f3744c1170ffc1cdf
+generated: "2026-06-12T22:12:44.108184298+01:00"

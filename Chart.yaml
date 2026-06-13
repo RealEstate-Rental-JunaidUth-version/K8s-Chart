@@ -4,3 +4,13 @@ description: A Helm chart for deploying backend and ML microservices
 type: application
 version: 0.1.0
 appVersion: "1.0.0"
+dependencies:
+  - name: kafka
+    version: 31.5.0
+    repository: https://charts.bitnami.com/bitnami
+  - name: vault
+    version: 0.33.0
+    repository: https://helm.releases.hashicorp.com
+  - name: external-secrets
+    version: 2.6.0
+    repository: https://charts.external-secrets.io
