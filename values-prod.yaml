@@ -7,11 +7,29 @@ kafka:
 vault:
   server:
     dev:
+      enabled: false
+    dataStorage:
       enabled: true
+      size: 10Gi
+    standalone:
+      enabled: true
+      config: |
+        ui = true
+        listener "tcp" {
+          tls_disable = 1
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+        }
+        storage "file" {
+          path = "/vault/data"
+        }
   injector:
     enabled: false
 
 external-secrets:
+  installCRDs: true
+
+cert-manager:
   installCRDs: true
 
 # Global settings for all pods

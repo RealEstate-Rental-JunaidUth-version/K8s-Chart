@@ -14,3 +14,6 @@ dependencies:
   - name: external-secrets
     version: 2.6.0
     repository: https://charts.external-secrets.io
+  - name: cert-manager
+    version: 1.14.4
+    repository: https://charts.jetstack.io
