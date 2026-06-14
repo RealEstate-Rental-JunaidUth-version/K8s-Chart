@@ -32,6 +32,13 @@ spec:
           ports:
             - containerPort: 3306
               name: mysql
+          resources:
+            requests:
+              memory: {{ $config.memoryRequest | default "256Mi" }}
+              cpu: {{ $config.cpuRequest | default "50m" }}
+            limits:
+              memory: {{ $config.memoryLimit | default "384Mi" }}
+              cpu: {{ $config.cpuLimit | default "200m" }}
           volumeMounts:
             - name: {{ $name }}-data
               mountPath: /var/lib/mysql

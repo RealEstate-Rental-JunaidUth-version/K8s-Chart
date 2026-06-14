@@ -10,7 +10,7 @@ vault:
       enabled: false
     dataStorage:
       enabled: true
-      size: 10Gi
+      size: 250Mi
     standalone:
       enabled: true
       config: |
@@ -118,13 +118,13 @@ microservices:
 databases:
   user-db:
     databaseName: userdb
-    storage: 500Mi
+    storage: 250Mi
   property-db:
     databaseName: propertydb
-    storage: 500Mi
+    storage: 250Mi
   rental-agreement-db:
     databaseName: rental_agreement_db
-    storage: 500Mi
+    storage: 250Mi
   notification-db:
     databaseName: notifications
-    storage: 500Mi
+    storage: 250Mi
