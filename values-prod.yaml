@@ -32,6 +32,11 @@ external-secrets:
 cert-manager:
   installCRDs: true
 
+ingress-nginx:
+  controller:
+    service:
+      type: NodePort
+
 # Global settings for all pods
 global:
   replicaCount: 1
