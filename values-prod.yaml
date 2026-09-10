@@ -24,6 +24,7 @@ vault:
           path = "/vault/data"
         }
   injector:
+  
     enabled: false
 
 external-secrets:
