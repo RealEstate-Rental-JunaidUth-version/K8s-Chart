@@ -1,5 +1,9 @@
 # Subchart Configurations
 kafka:
+  fullnameOverride: kafka
+  image:
+    repository: bitnamilegacy/kafka
+    tag: 3.9.0-debian-12-r12
   listeners:
     client:
       protocol: PLAINTEXT
@@ -40,6 +44,8 @@ ingress-nginx:
 
 # Global settings for all pods
 global:
+  security:
+    allowInsecureImages: true
   replicaCount: 1
   configServerUrl: "http://config-service-svc:80"
   profile: prod

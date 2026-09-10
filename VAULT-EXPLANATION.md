@@ -432,6 +432,91 @@ This is the exact trust relationship that allows ESO to authenticate to Vault.
 
 ---
 
+## 9. Safe usage of `configure-vault.sh`
+
+`configure-vault.sh` is a bootstrap script, not the runtime secret-injection mechanism.
+
+Its purpose is to configure Vault itself once the cluster is already running. It is meant to do the setup work, not to be committed with actual secrets inside the repository.
+
+### What the script is responsible for
+
+It does the following:
+
+1. waits for the Vault pod to be ready
+2. unseals Vault using a saved key
+3. logs in using the root token
+4. enables the KV v2 engine at the `secret` mount
+5. writes secret data into Vault
+6. enables Kubernetes auth in Vault
+7. creates the `eso` policy
+8. creates the `eso-role` role
+9. binds that role to the Kubernetes service account used by ESO
+
+### Why you should not hardcode secrets in the script
+
+This script should not be committed with actual secret values such as:
+
+- `DB_ROOT_PASSWORD`
+- `JWT_SECRET`
+- `OAUTH_SECRET`
+- Vault root token
+- Vault unseal key
+
+If those values are placed in a checked-in file, they become part of your Git history and can be exposed to anyone with repo access.
+
+The safe version is:
+
+```bash
+: "${VAULT_ROOT_TOKEN:?Set VAULT_ROOT_TOKEN before running this script}"
+: "${VAULT_UNSEAL_KEY:?Set VAULT_UNSEAL_KEY before running this script}"
+: "${DB_ROOT_PASSWORD:?Set DB_ROOT_PASSWORD before running this script}"
+: "${JWT_SECRET:?Set JWT_SECRET before running this script}"
+: "${OAUTH_SECRET:?Set OAUTH_SECRET before running this script}"
+```
+
+This makes the script read secrets from the local environment instead of embedding them in the repository.
+
+### What you should do in practice
+
+Use the script only in a secure, local, or controlled environment such as:
+
+```bash
+export VAULT_ROOT_TOKEN="..."
+export VAULT_UNSEAL_KEY="..."
+export DB_ROOT_PASSWORD="..."
+export JWT_SECRET="..."
+export OAUTH_SECRET="..."
+
+bash ./configure-vault.sh
+```
+
+Then keep the script itself outside source control or add it to `.gitignore`.
+
+A better approach is to keep the script in Git but store the real values in a local `.env` file or in your CI/CD secret storage:
+
+```bash
+cp .env.example .env
+# edit .env with your real values
+source .env
+bash ./configure-vault.sh
+```
+
+This keeps the script versioned while preventing real secrets from being committed to Git.
+
+### Why this is the correct pattern
+
+The real secret lifecycle is:
+
+1. secret is created outside Git
+2. secret is stored in Vault
+3. ESO reads from Vault
+4. ESO creates a Kubernetes Secret
+5. pods consume the Kubernetes Secret
+
+This keeps Git clean while still allowing the application to run securely.
+
+---
+
 ## 5. Exact secret flow
 
 The full secret flow is:

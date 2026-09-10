@@ -1,2 +1,4 @@
 cluster-keys.txt
-configure-vault.sh
+.env
+.env.*
+!.env.example
