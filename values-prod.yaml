@@ -8,31 +8,33 @@ kafka:
     client:
       protocol: PLAINTEXT
 
-vault:
-  server:
-    dev:
-      enabled: false
-    dataStorage:
-      enabled: true
-      size: 250Mi
-    standalone:
-      enabled: true
-      config: |
-        ui = true
-        listener "tcp" {
-          tls_disable = 1
-          address = "[::]:8200"
-          cluster_address = "[::]:8201"
-        }
-        storage "file" {
-          path = "/vault/data"
-        }
-  injector:
-  
-    enabled: false
+# VAULT DISABLED - Using simple Kubernetes Secrets instead
+# Keep this commented config for future use if needed
+# vault:
+#   server:
+#     dev:
+#       enabled: false
+#     dataStorage:
+#       enabled: true
+#       size: 250Mi
+#     standalone:
+#       enabled: true
+#       config: |
+#         ui = true
+#         listener "tcp" {
+#           tls_disable = 1
+#           address = "[::]:8200"
+#           cluster_address = "[::]:8201"
+#         }
+#         storage "file" {
+#           path = "/vault/data"
+#         }
+#   injector:
+#     enabled: false
 
-external-secrets:
-  installCRDs: true
+# EXTERNAL-SECRETS DISABLED - Not needed without Vault
+# external-secrets:
+#   installCRDs: true
 
 cert-manager:
   installCRDs: true
