@@ -132,13 +132,13 @@ microservices:
 databases:
   user-db:
     databaseName: userdb
-    storage: 250Mi
+    storage: 500Mi
   property-db:
     databaseName: propertydb
-    storage: 250Mi
+    storage: 500Mi
   rental-agreement-db:
     databaseName: rental_agreement_db
-    storage: 250Mi
+    storage: 500Mi
   notification-db:
     databaseName: notifications
-    storage: 250Mi
+    storage: 500Mi

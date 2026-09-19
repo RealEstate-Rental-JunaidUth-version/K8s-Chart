@@ -23,8 +23,8 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-passwords
-                  key: mysql-root-password
+                  name: app-secrets
+                  key: PROD_DB_PASSWORD
             - name: MYSQL_DATABASE
               value: {{ $config.databaseName }}
             - name: MYSQL_ROOT_HOST
@@ -32,13 +32,6 @@ spec:
           ports:
             - containerPort: 3306
               name: mysql
-          resources:
-            requests:
-              memory: {{ $config.memoryRequest | default "256Mi" }}
-              cpu: {{ $config.cpuRequest | default "50m" }}
-            limits:
-              memory: {{ $config.memoryLimit | default "384Mi" }}
-              cpu: {{ $config.cpuLimit | default "200m" }}
           volumeMounts:
             - name: {{ $name }}-data
               mountPath: /var/lib/mysql
