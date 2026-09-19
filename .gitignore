@@ -2,5 +2,7 @@ cluster-keys.txt
 .env
 .env.*
 !.env.example
-app-secrets-secret.yaml
 *.secret
+app-secrets.yaml
+app-secrets-secret.yaml
+values-prod-secrets.yaml
