@@ -23,8 +23,8 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: app-secrets
-                  key: PROD_DB_PASSWORD
+                  name: mysql-passwords
+                  key: mysql-root-password
             - name: MYSQL_DATABASE
               value: {{ $config.databaseName }}
             - name: MYSQL_ROOT_HOST
@@ -36,7 +36,9 @@ spec:
             - name: {{ $name }}-data
               mountPath: /var/lib/mysql
   volumeClaimTemplates:
-    - metadata:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
         name: {{ $name }}-data
       spec:
         accessModes: ["ReadWriteOnce"]
