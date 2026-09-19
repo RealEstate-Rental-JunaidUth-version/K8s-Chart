@@ -8,12 +8,12 @@ dependencies:
   - name: kafka
     version: 31.5.0
     repository: https://charts.bitnami.com/bitnami
-  - name: vault
-    version: 0.33.0
-    repository: https://helm.releases.hashicorp.com
-  - name: external-secrets
-    version: 2.6.0
-    repository: https://charts.external-secrets.io
+  # - name: vault
+  #   version: 0.33.0
+  #   repository: https://helm.releases.hashicorp.com
+  # - name: external-secrets
+  #   version: 2.6.0
+  #   repository: https://charts.external-secrets.io
   - name: cert-manager
     version: 1.14.4
     repository: https://charts.jetstack.io
