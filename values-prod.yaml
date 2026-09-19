@@ -1,6 +1,8 @@
 # Subchart Configurations
 kafka:
   fullnameOverride: kafka
+  controller:
+    replicaCount: 1
   image:
     repository: bitnamilegacy/kafka
     tag: 3.9.0-debian-12-r12
