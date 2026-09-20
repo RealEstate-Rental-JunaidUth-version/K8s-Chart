@@ -44,7 +44,7 @@ cert-manager:
 ingress-nginx:
   controller:
     service:
-      type: NodePort
+      type: LoadBalancer
 
 # Global settings for all pods
 global:
