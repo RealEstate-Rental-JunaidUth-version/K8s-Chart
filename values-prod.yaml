@@ -45,6 +45,8 @@ ingress-nginx:
   controller:
     service:
       type: LoadBalancer
+    ingressClassResource:
+      default: true
 
 # Global settings for all pods
 global:
