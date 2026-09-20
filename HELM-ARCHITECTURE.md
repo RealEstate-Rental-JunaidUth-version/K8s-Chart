@@ -224,6 +224,68 @@ dependencies:
          protocol: PLAINTEXT
    ```
 
+### 4.1 Deep Dive: What Actually Exists Inside the `/charts` Folder?
+
+The `/charts` directory functions like a `node_modules` or `vendor` directory, but for Kubernetes Helm charts. Every `.tgz` archive is a **complete, self-contained Helm chart** created and maintained by third parties (like Bitnami or Kubernetes SIGs).
+
+If you unpack `charts/kafka-31.5.0.tgz`, it expands into an entire standalone project with all the templates, scripts, default configurations, and RBAC rules needed to run Kafka:
+
+```text
+kafka/
+├── Chart.yaml                                # Subchart metadata (version 31.5.0, appVersion 3.9.0)
+├── values.yaml                               # Hundreds of default settings (ports, replicas, JVM heap)
+├── README.md                                 # Upstream documentation from Bitnami
+│
+└── templates/                                # Pre-written Kubernetes manifests for Kafka
+    │
+    ├── controller-eligible/
+    │   ├── statefulset.yaml                  # ➔ Creates the `kafka-controller` StatefulSet
+    │   ├── svc-headless.yaml                 # ➔ Creates `kafka-controller-headless` Service
+    │   ├── configmap.yaml                    # ➔ Creates `kafka-controller-configuration`
+    │   └── pdb.yaml                          # ➔ Creates the PodDisruptionBudget
+    │
+    ├── svc.yaml                              # ➔ Creates the main `kafka` Service (port 9092)
+    │
+    ├── rbac/                                 # ➔ Creates ServiceAccount `kafka`, Roles, & Bindings
+    │   ├── serviceaccount.yaml
+    │   └── role.yaml
+    │
+    ├── provisioning/                         # ➔ Automated topic creation jobs & scripts
+    │   └── job.yaml
+    │
+    └── metrics/                              # ➔ Prometheus / JMX exporter dashboards
+        ├── jmx-configmap.yaml
+        └── jmx-servicemonitor.yaml
+```
+
+### 4.2 The Values Merging Hierarchy
+
+You never need to edit the files inside `/charts/*.tgz` directly. Helm uses a clean two-layer inheritance model:
+
+```
+┌────────────────────────────────────────────────────────┐
+│  1. Default values inside subchart                      │
+│     (e.g., kafka/values.yaml sets replicaCount: 3)     │
+└───────────────────────────┬────────────────────────────┘
+                            │ (overridden by)
+┌───────────────────────────▼────────────────────────────┐
+│  2. Your parent values file                            │
+│     (values-prod.yaml under 'kafka:' key)              │
+└───────────────────────────┬────────────────────────────┘
+                            │ (injected into)
+┌───────────────────────────▼────────────────────────────┐
+│  3. Subchart templates (kafka/templates/*.yaml)        │
+└───────────────────────────┬────────────────────────────┘
+                            │ (renders)
+┌───────────────────────────▼────────────────────────────┐
+│  4. Final Kubernetes Manifests applied to cluster      │
+└────────────────────────────────────────────────────────┘
+```
+
+The other subcharts follow the exact same structure:
+- **`ingress-nginx-4.10.1.tgz`**: Contains templates for the Nginx controller Deployment, `IngressClass`, admission webhook jobs, and NodePort services.
+- **`cert-manager-v1.14.4.tgz`**: Contains templates for Cert-Manager controller, CA injector, and webhook validating configurations.
+
 ---
 
 ## 5. The GitOps Workflow with ArgoCD
