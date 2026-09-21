@@ -5,9 +5,11 @@ type: application
 version: 0.1.0
 appVersion: "1.0.0"
 dependencies:
-  - name: kafka
-    version: 31.5.0
-    repository: https://charts.bitnami.com/bitnami
+   # KAFKA DISABLED for minimal cloud test
+  # - name: kafka
+  #   version: 31.5.0
+  #   repository: https://charts.bitnami.com/bitnami
+  #   condition: kafka.enabled
   # - name: vault
   #   version: 0.33.0
   #   repository: https://helm.releases.hashicorp.com
