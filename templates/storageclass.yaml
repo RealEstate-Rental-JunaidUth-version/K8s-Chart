@@ -1,0 +1,14 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp2
+  annotations:
+    # Make this the default so PVCs without storageClassName use it automatically
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: ebs.csi.aws.com
+parameters:
+  type: gp2
+reclaimPolicy: Delete
+# WaitForFirstConsumer ensures the EBS volume is created in the same AZ as the pod
+volumeBindingMode: WaitForFirstConsumer
+
