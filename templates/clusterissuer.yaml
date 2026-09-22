@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # Let's Encrypt production endpoint
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: junaiduthman123@gmail.com
+    # Secret where the ACME account private key is stored
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+      # HTTP-01 challenge: Let's Encrypt visits our site to verify domain ownership
+      - http01:
+          ingress:
+            class: nginx
+
