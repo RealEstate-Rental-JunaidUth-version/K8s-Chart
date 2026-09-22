@@ -1,26 +1,42 @@
-# =============================================================================
-# MINIMAL CLOUD TEST CONFIGURATION
-# Only config-service + gateway-service to fit on Free Tier m7i-flex.large
-# (2 vCPU / 8 GiB RAM)
-# =============================================================================
+# Subchart Configurations
+kafka:
+  fullnameOverride: kafka
+  controller:
+    replicaCount: 1
+  image:
+    repository: bitnamilegacy/kafka
+    tag: 3.9.0-debian-12-r12
+  listeners:
+    client:
+      protocol: PLAINTEXT
 
-# KAFKA DISABLED - Not needed for minimal test
-# kafka:
-#   fullnameOverride: kafka
-#   controller:
-#     replicaCount: 0
-#   image:
-#     repository: bitnamilegacy/kafka
-#     tag: 3.9.0-debian-12-r12
-#   listeners:
-#     client:
-#       protocol: PLAINTEXT
-# enabled: false
-# VAULT DISABLED - Using Sealed Secrets instead
-# vault: ...
+# VAULT DISABLED - Using simple Kubernetes Secrets instead
+# Keep this commented config for future use if needed
+# vault:
+#   server:
+#     dev:
+#       enabled: false
+#     dataStorage:
+#       enabled: true
+#       size: 250Mi
+#     standalone:
+#       enabled: true
+#       config: |
+#         ui = true
+#         listener "tcp" {
+#           tls_disable = 1
+#           address = "[::]:8200"
+#           cluster_address = "[::]:8201"
+#         }
+#         storage "file" {
+#           path = "/vault/data"
+#         }
+#   injector:
+#     enabled: false
 
-# EXTERNAL-SECRETS DISABLED
-# external-secrets: ...
+# EXTERNAL-SECRETS DISABLED - Not needed without Vault
+# external-secrets:
+#   installCRDs: true
 
 cert-manager:
   installCRDs: true
@@ -39,43 +55,23 @@ global:
   replicaCount: 1
   configServerUrl: "http://config-service-svc:80"
   profile: prod
-
-# =============================================================================
-# MICROSERVICES - Only 2 active for minimal test
-# =============================================================================
+# List every microservice here. The template will loop through this list.
 microservices:
-
-  # ── 1. Config Server (must start first) ───────────────────────────────────
-  config-service:
-    image: junaiduthman/config-service
-    tag: 15-bf1763b
-    port: 8888
-    type: springboot
-    env:
-      JAVA_OPTS: "-Xms128m -Xmx256m"
-
-  # ── 2. Gateway Service ─────────────────────────────────────────────────────
   gateway-service:
     image: junaiduthman/gateway-service
     tag: latest
     port: 8080
     type: springboot
-    serviceType: ClusterIP
+    serviceType: ClusterIP # Ingress is now the entry point — no need for LoadBalancer
     needsConfigServer: true
     envFromSecret: "app-secrets"
-    env:
-      JAVA_OPTS: "-Xms128m -Xmx256m"
-
-  # ── DISABLED - Too heavy for Free Tier node ────────────────────────────────
-  # property-microservice:
-  #   image: junaiduthman/property-management-service
-  #   tag: latest
-  #   port: 8080
-  #   type: springboot
-  #   needsConfigServer: true
-  #   envFromSecret: "app-secrets"
-
-  # ── 3. User Management Service ────────────────────────────────────────────
+  property-microservice:
+    image: junaiduthman/property-management-service
+    tag: latest
+    port: 8080
+    type: springboot
+    needsConfigServer: true
+    envFromSecret: "app-secrets"
   user-management-service:
     image: junaiduthman/user-management-service
     tag: latest
@@ -83,67 +79,70 @@ microservices:
     type: springboot
     needsConfigServer: true
     envFromSecret: "app-secrets"
+  rental-agreement-microservice:
+    image: junaiduthman/rental-agreement-v2
+    tag: latest
+    port: 8080
+    type: springboot
+    needsConfigServer: true
+    envFromSecret: "app-secrets"
+  ml-pricesuggestionmodel:
+    image: junaiduthman/ml-pricesuggestionmodel
+    tag: latest
+    port: 5000
+    type: python
+  property-recommendation-engine:
+    image: junaiduthman/property-recommendation-engine
+    tag: latest
+    port: 5000
+    type: python
+  tenant-risk-scoring:
+    image: junaiduthman/tenant-risk-scoring
+    tag: latest
+    port: 5000
+    type: python
+  predictive-heatmaps-of-neighborhood-price-evolution:
+    image: junaiduthman/predictive-heatmaps-of-neighborhood-price-evolution
+    tag: latest
+    port: 5000
+    type: python
+  notification-service:
+    image: junaiduthman/notification-service
+    tag: latest
+    port: 8080
+    type: springboot
+    needsConfigServer: true
+    envFromSecret: "app-secrets"
     env:
-      JAVA_OPTS: "-Xms128m -Xmx256m"
-
-  # rental-agreement-microservice:
-  #   image: junaiduthman/rental-agreement-v2
-  #   tag: latest
-  #   port: 8080
-  #   type: springboot
-  #   needsConfigServer: true
-  #   envFromSecret: "app-secrets"
-
-  # notification-service:
-  #   image: junaiduthman/notification-service
-  #   tag: latest
-  #   port: 8080
-  #   type: springboot
-  #   needsConfigServer: true
-  #   envFromSecret: "app-secrets"
-  #   env:
-  #     KAFKA_BOOTSTRAP_SERVERS: "kafka.prod.svc.cluster.local:9092"
-
-  # auth-server:
-  #   image: junaiduthman/authorization-service
-  #   tag: latest
-  #   port: 8080
-  #   type: springboot
-  #   needsConfigServer: true
-  #   envFromSecret: "app-secrets"
-
-  # public-app:
-  #   image: junaiduthman/public-app
-  #   tag: 21-76d4f5f
-  #   port: 80
-  #   type: angular
-  #   serviceType: ClusterIP
-
-  # ── DISABLED - ML models (Python) ─────────────────────────────────────────
-  # ml-pricesuggestionmodel:
-  #   image: junaiduthman/ml-pricesuggestionmodel
-  # property-recommendation-engine:
-  #   image: junaiduthman/property-recommendation-engine
-  # tenant-risk-scoring:
-  #   image: junaiduthman/tenant-risk-scoring
-  # predictive-heatmaps-of-neighborhood-price-evolution:
-  #   image: junaiduthman/predictive-heatmaps-of-neighborhood-price-evolution
-
-# =============================================================================
-# DATABASES - Disabled for minimal test (gateway can start without DB for now)
-# =============================================================================
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.prod.svc.cluster.local:9092"
+  config-service:
+    image: junaiduthman/config-service
+    tag: 15-bf1763b
+    port: 8888
+    type: springboot
+  auth-server:
+    image: junaiduthman/authorization-service
+    tag: latest
+    port: 8080
+    type: springboot
+    needsConfigServer: true
+    envFromSecret: "app-secrets"
+  public-app:
+    image: junaiduthman/public-app
+    tag: 21-76d4f5f
+    port: 80
+    type: angular
+    serviceType: ClusterIP # Ingress is now the entry point — no need for LoadBalancer
 databases:
   user-db:
     databaseName: userdb
     storage: 500Mi
-
-# Disabled databases:
-#   property-db:
-#     databaseName: propertydb
-#     storage: 500Mi
-#   rental-agreement-db:
-#     databaseName: rental_agreement_db
-#     storage: 500Mi
-#   notification-db:
-#     databaseName: notifications
-#     storage: 500Mi
+  property-db:
+    databaseName: propertydb
+    storage: 500Mi
+  rental-agreement-db:
+    databaseName: rental_agreement_db
+    storage: 500Mi
+  notification-db:
+    databaseName: notifications
+    storage: 500Mi

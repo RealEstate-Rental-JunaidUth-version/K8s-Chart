@@ -42,7 +42,6 @@ spec:
         name: {{ $name }}-data
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: gp2
         resources:
           requests:
             storage: {{ $config.storage | default "500Mi" }}

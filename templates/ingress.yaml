@@ -6,12 +6,6 @@ metadata:
     # Tell Kubernetes to use the Nginx Ingress Controller
     kubernetes.io/ingress.class: "nginx"
 
-    # Automatically issue a TLS certificate via cert-manager + Let's Encrypt
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-
-    # Redirect all HTTP traffic to HTTPS automatically
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-
     # WebSocket support via native timeouts
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
@@ -22,15 +16,8 @@ metadata:
     # Rewrite is NOT used here — we keep the /api/ prefix
     # because the gateway expects it
 spec:
-  tls:
-    - hosts:
-        - www.realestate-junaid.freeddns.org
-      # cert-manager will create this secret automatically with the TLS certificate
-      secretName: realestate-tls
-
   rules:
-    - host: www.realestate-junaid.freeddns.org
-      http:
+    - http:
         paths:
 
           # ── 1. API routes → Gateway ──────────────────────────────
